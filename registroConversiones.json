@@ -1,4 +1,34 @@
 [
-  "{"fechaHora": "2024-10-09 12:25:39", "convertido": 100,00 USD a ARS, "tasaConversion": 975,9200, "resultado": 97592,00}",
-  "{"fechaHora": "2024-10-09 12:25:45", "convertido": 123456,00 ARS a USD, "tasaConversion": 0,0010, "resultado": 126,54}"
+  {
+    "baseCode": "USD",
+    "targetCode": "ARS",
+    "conversionRate": 975.92,
+    "conversionResult": 97592.0,
+    "fechaHora": "2024-10-09 16:32:25",
+    "cantidad": 100.0
+  },
+  {
+    "baseCode": "ARS",
+    "targetCode": "USD",
+    "conversionRate": 0.001025,
+    "conversionResult": 0.126403,
+    "fechaHora": "2024-10-09 16:32:34",
+    "cantidad": 123.32
+  },
+  {
+    "baseCode": "ARS",
+    "targetCode": "USD",
+    "conversionRate": 0.001025,
+    "conversionResult": 3.075E-6,
+    "fechaHora": "2024-10-09 16:32:40",
+    "cantidad": 0.003
+  },
+  {
+    "baseCode": "USD",
+    "targetCode": "COP",
+    "conversionRate": 4232.2537,
+    "conversionResult": 6616493.821895,
+    "fechaHora": "2024-10-09 16:33:13",
+    "cantidad": 1563.35
+  }
 ]

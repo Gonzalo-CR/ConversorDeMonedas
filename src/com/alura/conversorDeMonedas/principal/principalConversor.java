@@ -4,6 +4,7 @@ import com.alura.conversorDeMonedas.api.ApiClient;
 import com.alura.conversorDeMonedas.io.FileManager;
 import com.alura.conversorDeMonedas.services.ConversorService;
 import com.alura.conversorDeMonedas.modelos.ConversionModel;
+import com.alura.conversorDeMonedas.modelos.ErrorModel;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -38,13 +39,13 @@ public class principalConversor {
             if (opcion.equals("7")) {
                 try {
                     fileManager.writeToJson("registroConversiones.json");
-                    System.out.println("registro de conversiones guardado correctamente");
+                    System.out.println("Registro de conversiones guardado correctamente");
                 } catch (IOException e) {
                     System.out.println("Error al guardar el registro de conversiones: " + e.getMessage());
                 }
                 try {
                     fileManager.writeErrorsToJson("erroresConversion.json");
-                    System.out.println("registro de errores guardado correctamente");
+                    System.out.println("Registro de errores guardado correctamente");
                 } catch (IOException e) {
                     System.out.println("Error al guardar el registro de errores: " + e.getMessage());
                 }
@@ -54,7 +55,7 @@ public class principalConversor {
 
             // Verificar si la opción es válida
             if (!opcion.matches("[1-6]")) {
-                System.out.println("Esta opción no válida. Por favor elige un número del 1 al 7.");
+                System.out.println("Esta opción no es válida. Por favor elige un número del 1 al 7.");
                 continue; // Volver a mostrar el menú
             }
 
@@ -70,16 +71,28 @@ public class principalConversor {
             } catch (IllegalArgumentException e) {
                 String errorMsg = "Error: " + e.getMessage();
                 System.out.println(errorMsg);
-                fileManager.addError(dtf.format(LocalDateTime.now()) + " - " + errorMsg + " (Ingreso del usuario: " + cantidadCliente + ")"); // Registrar el error
+
+                // Crear y registrar ErrorModel
+                ErrorModel error = new ErrorModel(dtf.format(LocalDateTime.now()), errorMsg, cantidadCliente);
+                fileManager.addError(error);
+
             } catch (IOException | InterruptedException e) {
                 String errorMsg = "Error al obtener la cotización: " + e.getMessage();
                 System.out.println(errorMsg);
-                fileManager.addError(dtf.format(LocalDateTime.now()) + " - " + errorMsg + " (Ingreso del usuario: " + cantidadCliente + ")"); // Registrar el error
+
+                // Crear y registrar ErrorModel
+                ErrorModel error = new ErrorModel(dtf.format(LocalDateTime.now()), errorMsg, cantidadCliente);
+                fileManager.addError(error);
+
             } catch (Exception e) {
                 String errorMsg = "Error: La cantidad ingresada no es válida.";
                 System.out.println(errorMsg);
-                fileManager.addError(dtf.format(LocalDateTime.now()) + " - " + errorMsg + " (Ingreso del usuario: " + cantidadCliente + ")"); // Registrar el error
+
+                // Crear y registrar ErrorModel
+                ErrorModel error = new ErrorModel(dtf.format(LocalDateTime.now()), errorMsg, cantidadCliente);
+                fileManager.addError(error);
             }
+
             System.out.println("URL de consulta a la API 'ExchangeRate-API': " + apiClient.getLastUsedUrl());
         }
         scanner.close();

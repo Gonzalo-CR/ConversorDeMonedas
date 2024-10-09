@@ -4,7 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1bb29999-d98a-44dc-856b-fe7bb6ff4816" name="Changes" comment="" />
+    <list default="true" id="1bb29999-d98a-44dc-856b-fe7bb6ff4816" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/com/alura/conversorDeMonedas/modelos/ErrorModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/erroresConversion.json" beforeDir="false" afterPath="$PROJECT_DIR$/erroresConversion.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/registroConversiones.json" beforeDir="false" afterPath="$PROJECT_DIR$/registroConversiones.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/alura/conversorDeMonedas/api/ApiClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/alura/conversorDeMonedas/api/ApiClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/alura/conversorDeMonedas/io/FileManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/alura/conversorDeMonedas/io/FileManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/alura/conversorDeMonedas/principal/principalConversor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/alura/conversorDeMonedas/principal/principalConversor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/alura/conversorDeMonedas/services/ConversorService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/alura/conversorDeMonedas/services/ConversorService.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

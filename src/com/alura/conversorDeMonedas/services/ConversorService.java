@@ -15,20 +15,29 @@ public class ConversorService {
         this.fileManager = fileManager;
     }
 
+    // Método para realizar la conversión usando los valores obtenidos de la API
     public ConversionModel realizarConversion(String opcionCliente, double cantidad, String fechaHora) throws IOException, InterruptedException {
         String resultadoOpcionCliente = apiClient.resultadoOpcionCliente(opcionCliente);
-        double conversionResult = apiClient.getCotizacionByOpcion(resultadoOpcionCliente, String.valueOf(cantidad));
+
+        // Obtener los valores de la API: conversion_rate y conversion_result
+        ApiClient.ConversionResponse conversionResponse = apiClient.getCotizacionByOpcion(resultadoOpcionCliente, String.valueOf(cantidad));
 
         String baseCode = resultadoOpcionCliente.split("/")[0];
         String targetCode = resultadoOpcionCliente.split("/")[1];
-        double conversionRate = conversionResult / cantidad; // Se puede calcular la tasa de conversión
 
-        ConversionModel conversion = new ConversionModel(baseCode, targetCode, conversionRate, conversionResult, fechaHora, cantidad);
-        fileManager.addRegistro(conversion.toRegistroString()); // Agregar registro a FileManager
+        // Crear el modelo de conversión con los valores obtenidos de la API
+        ConversionModel conversion = new ConversionModel(
+                baseCode,
+                targetCode,
+                conversionResponse.getConversionRate(), // Usar la tasa de conversión de la API
+                conversionResponse.getConversionResult(), // Usar el resultado de la conversión de la API
+                fechaHora,
+                cantidad
+        );
 
+        // Agregar el registro al FileManager
+        fileManager.addRegistro(conversion);
 
         return conversion;
     }
-
-
 }

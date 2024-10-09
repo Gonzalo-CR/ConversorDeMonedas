@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -30,7 +31,27 @@ public class ApiClient {
         }
     }
 
-    public double getCotizacionByOpcion(String resultadoOpcionCliente, String cantidadCliente) throws IOException, InterruptedException {
+    // Clase auxiliar para retornar tanto el rate como el resultado
+    public static class ConversionResponse {
+        private final double conversionRate;
+        private final double conversionResult;
+
+        public ConversionResponse(double conversionRate, double conversionResult) {
+            this.conversionRate = conversionRate;
+            this.conversionResult = conversionResult;
+        }
+
+        public double getConversionRate() {
+            return conversionRate;
+        }
+
+        public double getConversionResult() {
+            return conversionResult;
+        }
+    }
+
+    // Método actualizado para obtener conversion_rate y conversion_result de la API
+    public ConversionResponse getCotizacionByOpcion(String resultadoOpcionCliente, String cantidadCliente) throws IOException, InterruptedException {
         String url = BASE_URL + resultadoOpcionCliente + cantidadCliente;
 
         lastUsedUrl = url;
@@ -43,11 +64,14 @@ public class ApiClient {
 
         if (response.statusCode() == 200) {
             JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject();
-            return jsonResponse.get("conversion_result").getAsDouble();
+            double conversionRate = jsonResponse.get("conversion_rate").getAsDouble(); // Obtener la tasa de conversión
+            double conversionResult = jsonResponse.get("conversion_result").getAsDouble(); // Obtener el resultado de la conversión
+            return new ConversionResponse(conversionRate, conversionResult); // Retornar ambos valores
         } else {
             throw new IOException("Error en la respuesta de la API: Código " + response.statusCode());
         }
     }
+
     public String getLastUsedUrl() {
         return lastUsedUrl;
     }

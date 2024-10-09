@@ -1,4 +1,17 @@
 [
-  "2024-10-09 12:25:49 - Error: For input string: "1/5" (Ingreso del usuario: 1/5)",
-  "2024-10-09 12:26:33 - Error: For input string: "2/3" (Ingreso del usuario: 2/3)"
+  {
+    "fechaHora": "2024-10-09 16:32:45",
+    "mensajeError": "Error al obtener la cotización: Error en la respuesta de la API: Código 404",
+    "inputUsuario": "0.0003"
+  },
+  {
+    "fechaHora": "2024-10-09 16:32:50",
+    "mensajeError": "Error al obtener la cotización: Error en la respuesta de la API: Código 404",
+    "inputUsuario": "321321658"
+  },
+  {
+    "fechaHora": "2024-10-09 16:33:03",
+    "mensajeError": "Error: For input string: \"2. 03326.3\"",
+    "inputUsuario": "2. 03326.3"
+  }
 ]
