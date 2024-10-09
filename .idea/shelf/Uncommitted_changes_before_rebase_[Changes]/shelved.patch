@@ -1,0 +1,33 @@
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"1bb29999-d98a-44dc-856b-fe7bb6ff4816\" name=\"Changes\" comment=\"\">\r\n      <change afterPath=\"$PROJECT_DIR$/.gitignore\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/.idea/codestream.xml\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/.idea/misc.xml\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/.idea/modules.xml\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/.idea/vcs.xml\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/ConversorDeMonedas.iml\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/src/Readme.md\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/src/com/alura/conversorDeMonedas/api/ApiClient.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/src/com/alura/conversorDeMonedas/io/FileManager.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/src/com/alura/conversorDeMonedas/modelos/ConversionModel.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/src/com/alura/conversorDeMonedas/principal/principalConversor.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/src/com/alura/conversorDeMonedas/services/ConversorService.java\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Record\" />\r\n        <option value=\"Class\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 7\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2nCDAf9ZZgSbK9baHXBN6j7OEUw\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;Application.principalConversor.executor&quot;: &quot;Run&quot;,\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,\r\n    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,\r\n    &quot;git-widget-placeholder&quot;: &quot;master&quot;,\r\n    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,\r\n    &quot;last_opened_file_path&quot;: &quot;D:/MIS CURSOS CAPACITACIONES ETC/ORACLE - ONE/JAVA/codigos java/Gson/gson-2.11.0.jar&quot;,\r\n    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,\r\n    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,\r\n    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;\r\n  }\r\n}</component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"1bb29999-d98a-44dc-856b-fe7bb6ff4816\" name=\"Changes\" comment=\"\" />\r\n      <created>1728468025251</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1728468025251</updated>\r\n    </task>\r\n    <servers />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision f988ac50aec0d0bb203ea852263b1bbf9658b923)
++++ b/.idea/workspace.xml	(date 1728498060724)
+@@ -4,21 +4,7 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="1bb29999-d98a-44dc-856b-fe7bb6ff4816" name="Changes" comment="">
+-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/.idea/codestream.xml" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/ConversorDeMonedas.iml" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/src/Readme.md" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/src/com/alura/conversorDeMonedas/api/ApiClient.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/src/com/alura/conversorDeMonedas/io/FileManager.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/src/com/alura/conversorDeMonedas/modelos/ConversionModel.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/src/com/alura/conversorDeMonedas/principal/principalConversor.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/src/com/alura/conversorDeMonedas/services/ConversorService.java" afterDir="false" />
+-    </list>
++    <list default="true" id="1bb29999-d98a-44dc-856b-fe7bb6ff4816" name="Changes" comment="" />
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
