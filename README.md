@@ -43,8 +43,9 @@ Este proyecto requiere las siguientes bibliotecas externas:
 - [Gson](https://mvnrepository.com/artifact/com.google.code.gson/gson): Para manejar la conversión entre JSON y objetos Java.
 - [Java-Dotenv](https://github.com/cdimascio/java-dotenv): Para cargar variables de entorno desde un archivo `.env`.
 
-Si estás usando Maven o Gradle, asegúrate de que estas dependencias estén correctamente configuradas en tu archivo `pom.xml` o `build.gradle`.
+Si estás usando Maven o Gradle, asegúrate de que estas dependencias estén correctamente configuradas en tu archivo `pom.xml` o `build.gradle`.\
 De lo contrario deberás agregarlas manualmente.
+
 ---
 
 
