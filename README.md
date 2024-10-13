@@ -54,7 +54,7 @@ De lo contrario deberás agregarlas manualmente.
 ### 1. ApiClient.java
 Esta clase es responsable de la comunicación con la API de tasas de cambio. Se encarga de construir las URL necesarias para la conversión y de obtener las tasas desde la API.
 
-Para este caso utilizamos la API free de https://www.exchangerate-api.com/ 
+Para este caso utilizamos la API free de [ExchangeRate-API](https://www.exchangerate-api.com/) 
 
 Esta clase es importada por `ConversorService` y `principalConversor`.
 
@@ -65,6 +65,7 @@ Esta clase es importada por `ConversorService` y `principalConversor`.
 - **_getCotizacionByOpcion_(String resultadoOpcionCliente, String cantidadCliente):** Llama a la API para obtener la tasa de conversión y el resultado de la conversión para una cantidad específica.
 
 Código:
+
 ````java
 package com.alura.conversorDeMonedas.api;
 
@@ -279,7 +280,7 @@ public class ConversionModel {
 ````
 
 ### 4. ErrorModel.java
-
+Modelo que representa un error ocurrido durante la ejecución, almacenando la fecha, el mensaje y la entrada del usuario. 
 Esta clase es importada por `principalConversor` y `FileManager`.
 
 Código: 
@@ -494,27 +495,27 @@ El resultado de la conversión se mostrará en la consola, y las conversiones y 
 
 ### Ejemplos de ejecución:
 
-#### Ejemplo de resultado:
+- **Ejemplo de resultado:**
 
 ![Vista resultado ejemplo Conversor de Monedas](./img/captura01.png)
 
-#### Ejemplo de finalización:
+- **Ejemplo de finalización:**
 
 ![Vista finalización ejemplo Conversor de Monedas](./img/captura02.png)
 
-#### Ejemplo de error en opción:
+- **Ejemplo de error en opción:**
 
 ![Vista Error en opción ejemplo Conversor de Monedas](./img/captura03.png)
 
-#### Ejemplo de error en cantidad:
+- **Ejemplo de error en cantidad:**
 
 ![Vista Error en cantidad ejemplo Conversor de Monedas](./img/captura04.png)
 
-#### Ejemplo de archivo registroConversiones.json:
+- **Ejemplo de archivo registroConversiones.json:**
 
 ![Vista archivo registro en ejemplo Conversor de Monedas](./img/captura05.png)
 
-#### Ejemplo de archivo erroresConversion.json:
+- **Ejemplo de archivo erroresConversion.json:**
 
 ![Vista archivo Error en ejemplo Conversor de Monedas](./img/captura06.png)
 
@@ -525,7 +526,7 @@ El resultado de la conversión se mostrará en la consola, y las conversiones y 
 
 
 \
-Este proyecto fue desarrollado para el  Challenges Alura "Challenge  Conversor de monedas" de la formación "Java Orientado a Objetos G7 - ONE" de ORACLE NEXT EDUCACTION -
+Este proyecto fue desarrollado para el  Challenges Alura "_Challenge  Conversor de monedas_" de la formación "_Java Orientado a Objetos G7 - ONE_" de **ORACLE** NEXT EDUCACTION -
 
 #### `GECR 2024`
 ```
