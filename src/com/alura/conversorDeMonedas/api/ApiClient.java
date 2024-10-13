@@ -1,5 +1,6 @@
 package com.alura.conversorDeMonedas.api;
 
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -9,10 +10,19 @@ import java.net.http.HttpResponse;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import io.github.cdimascio.dotenv.Dotenv; // Importa la biblioteca dotenv
+
 public class ApiClient {
-    private static final String BASE_URL = "https://v6.exchangerate-api.com/v6/110ffbea640aac9725171a41/pair/";
+    private static final String BASE_URL;
     private final HttpClient client;
     private String lastUsedUrl;
+
+    // Cargar dotenv
+    static {
+        Dotenv dotenv = Dotenv.load();
+        String apiKey = dotenv.get("APIKEY"); // Cargar la APIKEY desde el archivo .env
+        BASE_URL = "https://v6.exchangerate-api.com/v6/" + apiKey + "/pair/";
+    }
 
     public ApiClient() {
         this.client = HttpClient.newHttpClient();
@@ -50,10 +60,9 @@ public class ApiClient {
         }
     }
 
-    // Método actualizado para obtener conversion_rate y conversion_result de la API
+    // Método para obtener conversion_rate y conversion_result de la API
     public ConversionResponse getCotizacionByOpcion(String resultadoOpcionCliente, String cantidadCliente) throws IOException, InterruptedException {
         String url = BASE_URL + resultadoOpcionCliente + cantidadCliente;
-
         lastUsedUrl = url;
 
         HttpRequest request = HttpRequest.newBuilder()

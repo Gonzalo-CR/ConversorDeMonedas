@@ -14,17 +14,17 @@ public class FileManager {
     private List<ConversionModel> registros = new ArrayList<>();  // Lista para ConversionModel
     private List<ErrorModel> errores = new ArrayList<>(); // Lista para ErrorModel
 
-    // Metodo para agregar un registro de conversión
+    // Método para agregar un registro de conversión
     public void addRegistro(ConversionModel registro) {
         registros.add(registro);
     }
 
-    // Metodo para agregar un error
+    // Método para agregar un registro de error
     public void addError(ErrorModel error) {
         errores.add(error); // Agregar ErrorModel a la lista de errores
     }
 
-    // Metodo para escribir registros de conversiones en JSON
+    // Método para escribir registros de conversiones en JSON
     public void writeToJson(String filename) throws IOException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create(); // Usar Gson para formatear JSON
         try (FileWriter writer = new FileWriter(filename)) {
@@ -32,7 +32,7 @@ public class FileManager {
         }
     }
 
-    // Metodo para escribir errores en JSON
+    // Método para escribir errores en JSON
     public void writeErrorsToJson(String filename) throws IOException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create(); // Usar Gson para formatear JSON
         try (FileWriter writer = new FileWriter(filename)) {

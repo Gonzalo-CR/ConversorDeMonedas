@@ -42,10 +42,4 @@ public class ConversionModel {
     public double getCantidad() {
         return cantidad;
     }
-
-    // Método para crear un string de registro
-    public String toRegistroString() {
-        return String.format("{\"fechaHora\": \"%s\", \"convertido\": %.2f %s a %s, \"tasaConversion\": %.4f, \"resultado\": %.2f}",
-                fechaHora, cantidad, baseCode, targetCode, conversionRate, conversionResult);
-    }
 }

@@ -1,264 +1,409 @@
-# Resumen General del Código
+# Conversor de Monedas
 
-#### El programa es un conversor de monedas que permite a los usuarios convertir entre varias divisas utilizando una API externa para obtener las tasas de conversión. Se compone de las siguientes clases:
+## Descripción General
+
+#### Este proyecto es un conversor de monedas que permite a los usuarios convertir entre varias divisas utilizando una API externa para obtener las tasas de conversión. El sistema maneja tanto las conversiones exitosas como los errores que puedan surgir durante el proceso, guardando los resultados y errores en archivos JSON.
+
+### Funcionalidades Principales
+
+- Conversión de varias divisas mediante una API externa.
+- Almacenamiento de registros de conversiones y errores en archivos JSON.
+- Manejo de errores con descripciones detalladas.
+- Soporte para las siguientes divisas:
+
+    - Dólar estadounidense (USD)
+    - Peso argentino (ARS)
+    - Real brasileño (BRL)
+    - Peso colombiano (COP)
+
+
+### Resumen General del Código
+
+El programa consta de los siguientes archivos:
 
     ApiClient: Maneja la comunicación con la API de tasas de cambio.
     FileManager: Se encarga de registrar las conversiones y los errores en archivos JSON.
     ConversionModel: Representa el modelo de conversión de monedas.
-    ConversorService: Contiene la lógica de conversión y coordina la interacción entre las otras clases.
+    ErrorModel: Representa el modelo de manejo de errores.
     PrincipalConversor: Contiene el método principal que interactúa con el usuario.
+    ConversorService: Contiene la lógica de conversión y coordina la interacción entre las otras clases.
+
+## Requisitos de Configuración
+
+### API Key
+Para el correcto funcionamiento del proyecto, es necesario configurar una API key para realizar solicitudes a la API de ExchangeRate.
 
 
+Crea un archivo `.env` en el directorio raíz del proyecto con el siguiente contenido:
+``APIKEY=<tu api key>``
 
-# 
-### Ahora, revisemos cada archivo y su contenido:
-## 1. ApiClient.java
+### Dependencias
+Este proyecto requiere las siguientes bibliotecas externas:
+
+- [Gson](https://mvnrepository.com/artifact/com.google.code.gson/gson): Para manejar la conversión entre JSON y objetos Java.
+- [Java-Dotenv](https://github.com/cdimascio/java-dotenv): Para cargar variables de entorno desde un archivo `.env`.
+
+Si estás usando Maven o Gradle, asegúrate de que estas dependencias estén correctamente configuradas en tu archivo `pom.xml` o `build.gradle`.
+De lo contrario deberás agregarlas manualmente.
+---
 
 
+## Estructura del Proyecto
+
+### 1. ApiClient.java
+Esta clase es responsable de la comunicación con la API de tasas de cambio. Se encarga de construir las URL necesarias para la conversión y de obtener las tasas desde la API.
+
+Para este caso utilizamos la API free de https://www.exchangerate-api.com/ 
+
+Esta clase es importada por `ConversorService` y `principalConversor`.
+
+#### Funciones Principales:
+
+- **_resultadoOpcionCliente_(String opcionCliente):** Determina el par de monedas en función de la selección del usuario.
+
+- **_getCotizacionByOpcion_(String resultadoOpcionCliente, String cantidadCliente):** Llama a la API para obtener la tasa de conversión y el resultado de la conversión para una cantidad específica.
+
+Código:
 ````java
-    package com.alura.conversorDeMonedas.api;
-    
-    import java.io.IOException;
-    import java.net.URI;
-    import java.net.http.HttpClient;
-    import java.net.http.HttpRequest;
-    import java.net.http.HttpResponse;
-    import com.google.gson.JsonObject;
-    import com.google.gson.JsonParser;
-    
-    public class ApiClient {
-    private static final String BASE_URL = "https://v6.exchangerate-api.com/v6/110ffbea640aac9725171a41/pair/";
+package com.alura.conversorDeMonedas.api;
+
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import io.github.cdimascio.dotenv.Dotenv; // Importa la biblioteca dotenv
+
+public class ApiClient {
+    private static final String BASE_URL;
     private final HttpClient client;
     private String lastUsedUrl;
 
+    // Cargar dotenv
+    static {
+        Dotenv dotenv = Dotenv.load();
+        String apiKey = dotenv.get("APIKEY"); // Cargar la APIKEY desde el archivo .env
+        BASE_URL = "https://v6.exchangerate-api.com/v6/" + apiKey + "/pair/";
+    }
+
     public ApiClient() {
-        this.client = HttpClient.newHttpClient(); // Inicializa un cliente HTTP
+        this.client = HttpClient.newHttpClient();
     }
 
     public String resultadoOpcionCliente(String opcionCliente) {
         switch (opcionCliente) {
-            case "1": return "USD/ARS/"; // Dólar a Peso Argentino
-            case "2": return "ARS/USD/"; // Peso Argentino a Dólar
-            case "3": return "USD/BRL/"; // Dólar a Real Brasileño
-            case "4": return "BRL/USD/"; // Real Brasileño a Dólar
-            case "5": return "USD/COP/"; // Dólar a Peso Colombiano
-            case "6": return "COP/USD/"; // Peso Colombiano a Dólar
-            case "7": return "salir"; // Salir del programa
-            default: throw new IllegalArgumentException("Opción no válida. Por favor elige un número del 1 al 7."); // Manejo de errores
+            case "1": return "USD/ARS/";
+            case "2": return "ARS/USD/";
+            case "3": return "USD/BRL/";
+            case "4": return "BRL/USD/";
+            case "5": return "USD/COP/";
+            case "6": return "COP/USD/";
+            case "7": return "salir";
+            default: throw new IllegalArgumentException("Opción no válida. Por favor elige un número del 1 al 7.");
         }
     }
 
-    public double getCotizacionByOpcion(String resultadoOpcionCliente, String cantidadCliente) throws IOException, InterruptedException {
-        String url = BASE_URL + resultadoOpcionCliente + cantidadCliente; // Construye la URL
+    // Clase auxiliar para retornar tanto el rate como el resultado
+    public static class ConversionResponse {
+        private final double conversionRate;
+        private final double conversionResult;
 
-        lastUsedUrl = url; // Guarda la última URL utilizada
+        public ConversionResponse(double conversionRate, double conversionResult) {
+            this.conversionRate = conversionRate;
+            this.conversionResult = conversionResult;
+        }
 
-        HttpRequest request = HttpRequest.newBuilder() // Crea una solicitud HTTP
-                .uri(URI.create(url)) // Establece la URI
+        public double getConversionRate() {
+            return conversionRate;
+        }
+
+        public double getConversionResult() {
+            return conversionResult;
+        }
+    }
+
+    // Método para obtener conversion_rate y conversion_result de la API
+    public ConversionResponse getCotizacionByOpcion(String resultadoOpcionCliente, String cantidadCliente) throws IOException, InterruptedException {
+        String url = BASE_URL + resultadoOpcionCliente + cantidadCliente;
+        lastUsedUrl = url;
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
                 .build();
 
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()); // Envía la solicitud y obtiene la respuesta
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() == 200) { // Verifica si la respuesta es exitosa
-            JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject(); // Parsea la respuesta JSON
-            return jsonResponse.get("conversion_result").getAsDouble(); // Devuelve el resultado de conversión
+        if (response.statusCode() == 200) {
+            JsonObject jsonResponse = JsonParser.parseString(response.body()).getAsJsonObject();
+            double conversionRate = jsonResponse.get("conversion_rate").getAsDouble(); // Obtener la tasa de conversión
+            double conversionResult = jsonResponse.get("conversion_result").getAsDouble(); // Obtener el resultado de la conversión
+            return new ConversionResponse(conversionRate, conversionResult); // Retornar ambos valores
         } else {
-            throw new IOException("Error en la respuesta de la API: Código " + response.statusCode()); // Manejo de errores
+            throw new IOException("Error en la respuesta de la API: Código " + response.statusCode());
         }
     }
 
     public String getLastUsedUrl() {
-        return lastUsedUrl; // Devuelve la última URL utilizada
+        return lastUsedUrl;
     }
-    }
+}
+
 ```` 
 
 
-### Descripción del archivo:
+### 2. FileManager.java
 
-    ApiClient: Clase responsable de comunicarse con la API externa. Se encarga de construir las URL para las conversiones y obtener las tasas desde la API.
+Clase responsable de manejar los registros de conversiones y errores, almacenando ambos en archivos JSON.
+Importa a las clases `ConversionModel` y `ErrorModel`,
+y es importada por `ConversorService` y `principalConversor`.
 
-## 2. FileManager.java
+#### Funciones Principales:
 
+- **_addRegistro_(ConversionModel registro)**: Agrega un registro de conversión.
+
+- **_addError_(ErrorModel error)**: Agrega un error.
+
+- **_writeToJson_(String filename)**: Escribe los registros en un archivo JSON.
+
+- **_writeErrorsToJson_(String filename)**: Escribe los errores en un archivo JSON.
+
+Código:
 
 ````java
-    package com.alura.conversorDeMonedas.io;
-    
-    import java.io.FileWriter;
-    import java.io.IOException;
-    import java.util.ArrayList;
-    import java.util.List;
-    
-    public class FileManager {
-    private List<String> registros = new ArrayList<>(); // Lista para almacenar registros de conversiones
-    private List<String> errores = new ArrayList<>(); // Lista para registrar errores
+package com.alura.conversorDeMonedas.io;
 
-    public void addRegistro(String registro) {
-        registros.add(registro); // Agrega un registro a la lista
+import com.alura.conversorDeMonedas.modelos.ConversionModel;
+import com.alura.conversorDeMonedas.modelos.ErrorModel;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class FileManager {
+    private List<ConversionModel> registros = new ArrayList<>();  // Lista para ConversionModel
+    private List<ErrorModel> errores = new ArrayList<>(); // Lista para ErrorModel
+
+    // Método para agregar un registro de conversión
+    public void addRegistro(ConversionModel registro) {
+        registros.add(registro);
     }
 
-    public void addError(String error) {
-        errores.add(error); // Agrega un error a la lista
+    // Método para agregar un registro de error
+    public void addError(ErrorModel error) {
+        errores.add(error); // Agregar ErrorModel a la lista de errores
     }
 
+    // Método para escribir registros de conversiones en JSON
     public void writeToJson(String filename) throws IOException {
-        try (FileWriter writer = new FileWriter(filename)) { // Crea un FileWriter para escribir en el archivo
-            writer.write("[\n");
-            for (int i = 0; i < registros.size(); i++) {
-                writer.write("  \"" + registros.get(i) + "\""); // Escribe cada registro como un string JSON
-                if (i < registros.size() - 1) {
-                    writer.write(",\n"); // Agrega una coma entre registros
-                }
-            }
-            writer.write("\n]");
+        Gson gson = new GsonBuilder().setPrettyPrinting().create(); // Usar Gson para formatear JSON
+        try (FileWriter writer = new FileWriter(filename)) {
+            writer.write(gson.toJson(registros)); // Guardar lista de ConversionModel como JSON
         }
     }
 
+    // Método para escribir errores en JSON
     public void writeErrorsToJson(String filename) throws IOException {
-        try (FileWriter writer = new FileWriter(filename)) { // Crea un FileWriter para escribir en el archivo
-            writer.write("[\n");
-            for (int i = 0; i < errores.size(); i++) {
-                writer.write("  \"" + errores.get(i) + "\""); // Escribe cada error como un string JSON
-                if (i < errores.size() - 1) {
-                    writer.write(",\n"); // Agrega una coma entre errores
-                }
-            }
-            writer.write("\n]");
+        Gson gson = new GsonBuilder().setPrettyPrinting().create(); // Usar Gson para formatear JSON
+        try (FileWriter writer = new FileWriter(filename)) {
+            writer.write(gson.toJson(errores)); // Guardar lista de ErrorModel como JSON
         }
     }
-    }
+}
+
 ````
-### Descripción del archivo:
-
-    FileManager: Clase encargada de manejar la escritura de registros y errores en archivos JSON. Proporciona métodos para agregar registros y errores a las listas y para escribirlas en archivos.
-
-## 3. ConversionModel.java
 
 
+### 3. ConversionModel.java
+
+Esta clase representa el modelo de conversión de monedas. Almacena la información sobre las monedas involucradas, la tasa de conversión, el resultado, la cantidad ingresada y la fecha y hora de la conversión.
+
+Esta clase es importada por `ConversorService`, `principalConversor` y `FileManager`.
+
+Código:
 ````java
-    package com.alura.conversorDeMonedas.modelos;
-    
-    public class ConversionModel {
-    private String baseCode; // Código de la moneda base
-    private String targetCode; // Código de la moneda objetivo
-    private double conversionRate; // Tasa de conversión
-    private double conversionResult; // Resultado de la conversión
+package com.alura.conversorDeMonedas.modelos;
+
+public class ConversionModel {
+    private String baseCode;
+    private String targetCode;
+    private double conversionRate;
+    private double conversionResult;
     private String fechaHora; // Fecha y hora de la consulta
     private double cantidad; // Cantidad ingresada por el cliente
 
+    // Constructor de inicialización de los atributos de la clase
     public ConversionModel(String baseCode, String targetCode, double conversionRate, double conversionResult, String fechaHora, double cantidad) {
-        this.baseCode = baseCode; // Inicializa el código de la moneda base
-        this.targetCode = targetCode; // Inicializa el código de la moneda objetivo
-        this.conversionRate = conversionRate; // Inicializa la tasa de conversión
-        this.conversionResult = conversionResult; // Inicializa el resultado de la conversión
-        this.fechaHora = fechaHora; // Inicializa la fecha y hora
-        this.cantidad = cantidad; // Inicializa la cantidad ingresada
+        this.baseCode = baseCode;
+        this.targetCode = targetCode;
+        this.conversionRate = conversionRate;
+        this.conversionResult = conversionResult;
+        this.fechaHora = fechaHora;
+        this.cantidad = cantidad;
     }
 
     // Getters
     public String getBaseCode() {
-        return baseCode; // Devuelve el código de la moneda base
+        return baseCode;
     }
 
     public String getTargetCode() {
-        return targetCode; // Devuelve el código de la moneda objetivo
+        return targetCode;
     }
 
     public double getConversionRate() {
-        return conversionRate; // Devuelve la tasa de conversión
+        return conversionRate;
     }
 
     public double getConversionResult() {
-        return conversionResult; // Devuelve el resultado de la conversión
+        return conversionResult;
     }
 
     public String getFechaHora() {
-        return fechaHora; // Devuelve la fecha y hora
+        return fechaHora;
     }
 
     public double getCantidad() {
-        return cantidad; // Devuelve la cantidad ingresada
+        return cantidad;
     }
+}
 
-    public String toRegistroString() {
-        return String.format("{\"fechaHora\": \"%s\", \"convertido\": %.2f %s a %s, \"tasaConversion\": %.4f, \"resultado\": %.2f}",
-                fechaHora, cantidad, baseCode, targetCode, conversionRate, conversionResult); // Crea un string de registro
-    }
-    }
 ````
-### Descripción del archivo:
 
-    ConversionModel: Clase que representa el modelo de conversión de monedas. Almacena información sobre las monedas involucradas, la tasa de conversión, el resultado de la conversión, la fecha y hora de la consulta, y la cantidad ingresada.
+### 4. ErrorModel.java
 
-## 4. ConversorService.java
+Esta clase es importada por `principalConversor` y `FileManager`.
 
+Código: 
 
 ````java
-    package com.alura.conversorDeMonedas.services;
-    
-    import com.alura.conversorDeMonedas.api.ApiClient;
-    import com.alura.conversorDeMonedas.io.FileManager;
-    import com.alura.conversorDeMonedas.modelos.ConversionModel;
-    
-    import java.io.IOException;
-    import java.text.SimpleDateFormat;
-    import java.util.Date;
-    
-    public class ConversorService {
-    private ApiClient apiClient; // Instancia de ApiClient
-    private FileManager fileManager; // Instancia de FileManager
+package com.alura.conversorDeMonedas.modelos;
+
+public class ErrorModel {
+    private String fechaHora; // Fecha y hora del error
+    private String mensajeError; // Mensaje descriptivo del error
+    private String inputUsuario; // El valor ingresado por el usuario (opcional)
+
+    // Constructor
+    public ErrorModel(String fechaHora, String mensajeError, String inputUsuario) {
+        this.fechaHora = fechaHora;
+        this.mensajeError = mensajeError;
+        this.inputUsuario = inputUsuario;
+    }
+
+    // Getters
+    public String getFechaHora() {
+        return fechaHora;
+    }
+
+    public String getMensajeError() {
+        return mensajeError;
+    }
+
+    public String getInputUsuario() {
+        return inputUsuario;
+    }
+}
+
+````
+
+### 5. ConversorService.java
+Clase que contiene la lógica de conversión, obteniendo las tasas de cambio desde `ApiClient` y guardando los resultados a través de `FileManager`.
+
+Ejecuta la conversion importando `ConversionModel`.
+
+Es importada como clase por `principalConversor`.
+
+Código:
+
+````java
+package com.alura.conversorDeMonedas.services;
+
+import com.alura.conversorDeMonedas.api.ApiClient;
+import com.alura.conversorDeMonedas.io.FileManager;
+import com.alura.conversorDeMonedas.modelos.ConversionModel;
+
+import java.io.IOException;
+
+public class ConversorService {
+    private final ApiClient apiClient;
+    private final FileManager fileManager;
 
     public ConversorService(ApiClient apiClient, FileManager fileManager) {
-        this.apiClient = apiClient; // Inicializa apiClient
-        this.fileManager = fileManager; // Inicializa fileManager
+        this.apiClient = apiClient;
+        this.fileManager = fileManager;
     }
 
-    public void realizarConversion(String opcionCliente, String cantidadCliente) throws IOException, InterruptedException {
-        String resultadoOpcionCliente = apiClient.resultadoOpcionCliente(opcionCliente); // Obtiene el par de divisas
-        double conversionResult = apiClient.getCotizacionByOpcion(resultadoOpcionCliente, cantidadCliente); // Obtiene el resultado de conversión
+    // Método para realizar la conversión usando los valores obtenidos de la API
+    public ConversionModel realizarConversion(String opcionCliente, double cantidad, String fechaHora) throws IOException, InterruptedException {
+        String resultadoOpcionCliente = apiClient.resultadoOpcionCliente(opcionCliente);
 
-        // Registra la conversión
-        String fechaHora = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-        ConversionModel conversionModel = new ConversionModel(
-                resultadoOpcionCliente.split("/")[0],
-                resultadoOpcionCliente.split("/")[1],
-                conversionResult,
-                conversionResult * Double.parseDouble(cantidadCliente),
+        // Obtener los valores de la API: conversion_rate y conversion_result
+        ApiClient.ConversionResponse conversionResponse = apiClient.getCotizacionByOpcion(resultadoOpcionCliente, String.valueOf(cantidad));
+
+        String baseCode = resultadoOpcionCliente.split("/")[0];
+        String targetCode = resultadoOpcionCliente.split("/")[1];
+
+        // Crear el modelo de conversión con los valores obtenidos de la API
+        ConversionModel conversion = new ConversionModel(
+                baseCode,
+                targetCode,
+                conversionResponse.getConversionRate(), // Usar la tasa de conversión de la API
+                conversionResponse.getConversionResult(), // Usar el resultado de la conversión de la API
                 fechaHora,
-                Double.parseDouble(cantidadCliente)
+                cantidad
         );
 
-        fileManager.addRegistro(conversionModel.toRegistroString()); // Agrega el registro al FileManager
-        System.out.println("Conversión exitosa: " + conversionModel.getConversionResult());
+        // Agregar el registro al FileManager
+        fileManager.addRegistro(conversion);
+
+        return conversion;
     }
-    }
+}
+
 ````
-### Descripción del archivo:
 
-    ConversorService: Clase que contiene la lógica de conversión. Maneja la interacción entre ApiClient y FileManager, y registra la conversión.
 
-## 5. PrincipalConversor.java
+### 6. PrincipalConversor.java
+Esta clase contiene el método main y es el punto de entrada del programa. Controla la interacción con el usuario y llama a los servicios para realizar las conversiones y manejar errores.
 
+Importa a todas las otras clases. 
+
+Código:
 
 ````java
-    package com.alura.conversorDeMonedas;
-    
-    import com.alura.conversorDeMonedas.api.ApiClient;
-    import com.alura.conversorDeMonedas.io.FileManager;
-    import com.alura.conversorDeMonedas.services.ConversorService;
-    
-    import java.io.IOException;
-    import java.util.Scanner;
-    
-    public class PrincipalConversor {
+package com.alura.conversorDeMonedas.principal;
+
+import com.alura.conversorDeMonedas.api.ApiClient;
+import com.alura.conversorDeMonedas.io.FileManager;
+import com.alura.conversorDeMonedas.services.ConversorService;
+import com.alura.conversorDeMonedas.modelos.ConversionModel;
+import com.alura.conversorDeMonedas.modelos.ErrorModel;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
+
+public class principalConversor {
     public static void main(String[] args) {
-    Scanner scanner = new Scanner(System.in);
-    ApiClient apiClient = new ApiClient(); // Crea una instancia de ApiClient
-    FileManager fileManager = new FileManager(); // Crea una instancia de FileManager
-    ConversorService conversorService = new ConversorService(apiClient, fileManager); // Crea una instancia de ConversorService
+        ApiClient apiClient = new ApiClient();
+        FileManager fileManager = new FileManager();
+        ConversorService conversorService = new ConversorService(apiClient, fileManager);
+        Scanner scanner = new Scanner(System.in);
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         while (true) {
-            System.out.println("Seleccione una opción para convertir divisas:");
+            System.out.println("***********************************************");
+            System.out.println("Bienvenido al Conversor de Monedas =)");
             System.out.println("1: Dólar a Peso Argentino");
             System.out.println("2: Peso Argentino a Dólar");
             System.out.println("3: Dólar a Real Brasileño");
@@ -266,41 +411,120 @@
             System.out.println("5: Dólar a Peso Colombiano");
             System.out.println("6: Peso Colombiano a Dólar");
             System.out.println("7: Salir");
+            System.out.println("Escriba el número de opción de conversión que desea:");
+            System.out.println("***********************************************");
 
-            String opcionCliente = scanner.nextLine(); // Lee la opción del usuario
+            String opcion = scanner.nextLine();
 
-            if (opcionCliente.equals("7")) {
-                break; // Sale del ciclo si elige salir
+            // Verificar si el usuario desea salir antes de pedir cantidad
+            if (opcion.equals("7")) {
+                try {
+                    fileManager.writeToJson("registroConversiones.json");
+                    System.out.println("Registro de conversiones guardado correctamente");
+                } catch (IOException e) {
+                    System.out.println("Error al guardar el registro de conversiones: " + e.getMessage());
+                }
+                try {
+                    fileManager.writeErrorsToJson("erroresConversion.json");
+                    System.out.println("Registro de errores guardado correctamente");
+                } catch (IOException e) {
+                    System.out.println("Error al guardar el registro de errores: " + e.getMessage());
+                }
+                System.out.println("Finalizando. Gracias por usar nuestra app!!");
+                break;
             }
+
+            // Verificar si la opción es válida
+            if (!opcion.matches("[1-6]")) {
+                System.out.println("Esta opción no es válida. Por favor elige un número del 1 al 7.");
+                continue; // Volver a mostrar el menú
+            }
+
+            System.out.println("Ingrese la cantidad a convertir:");
+            String cantidadCliente = scanner.nextLine();
 
             try {
-                System.out.print("Ingrese la cantidad a convertir: ");
-                String cantidadCliente = scanner.nextLine(); // Lee la cantidad a convertir
-                conversorService.realizarConversion(opcionCliente, cantidadCliente); // Realiza la conversión
+                // Ejecutar la conversión
+                double cantidad = Double.parseDouble(cantidadCliente);
+                ConversionModel conversion = conversorService.realizarConversion(opcion, cantidad, dtf.format(LocalDateTime.now()));
+                System.out.println("El valor: " + cantidad + " [" + conversion.getBaseCode() + "] corresponde al valor final de " + conversion.getConversionResult() + " [" + conversion.getTargetCode() + "]");
+
+            } catch (IllegalArgumentException e) {
+                String errorMsg = "Error: " + e.getMessage();
+                System.out.println(errorMsg);
+
+                // Crear y registrar ErrorModel
+                ErrorModel error = new ErrorModel(dtf.format(LocalDateTime.now()), errorMsg, cantidadCliente);
+                fileManager.addError(error);
 
             } catch (IOException | InterruptedException e) {
-                String errorMessage = "Error en la conversión: " + e.getMessage(); // Manejo de errores
-                System.out.println(errorMessage);
-                fileManager.addError(errorMessage); // Agrega el error al FileManager
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage()); // Manejo de opciones no válidas
-            }
-        }
+                String errorMsg = "Error al obtener la cotización: " + e.getMessage();
+                System.out.println(errorMsg);
 
-        // Guarda los registros y errores en archivos JSON al salir
-        try {
-            fileManager.writeToJson("registros.json");
-            fileManager.writeErrorsToJson("erroresConversion.json");
-        } catch (IOException e) {
-            System.out.println("Error al guardar registros: " + e.getMessage()); // Manejo de errores al guardar
+                // Crear y registrar ErrorModel
+                ErrorModel error = new ErrorModel(dtf.format(LocalDateTime.now()), errorMsg, cantidadCliente);
+                fileManager.addError(error);
+
+            } catch (Exception e) {
+                String errorMsg = "Error: La cantidad ingresada no es válida.";
+                System.out.println(errorMsg);
+
+                // Crear y registrar ErrorModel
+                ErrorModel error = new ErrorModel(dtf.format(LocalDateTime.now()), errorMsg, cantidadCliente);
+                fileManager.addError(error);
+            }
+
+            System.out.println("URL de consulta a la API 'ExchangeRate-API': " + apiClient.getLastUsedUrl());
         }
+        scanner.close();
     }
 }
+
 ````
-### Descripción del archivo:
 
-    PrincipalConversor: Clase que contiene el método main. 
-    Maneja la interacción del usuario y coordina la ejecución del conversor.
+## Ejecución del Proyecto
+
+Ejecuta el proyecto desde `principalConversor.java`.
+
+Selecciona la opción correspondiente a las  divisas que deseas convertir y proporciona la cantidad.
+
+El resultado de la conversión se mostrará en la consola, y las conversiones y errores se guardarán en archivos JSON.
 
 
-# Manejo de Excepciones y Errores
+### Ejemplos de ejecución:
+
+#### Ejemplo de resultado:
+
+![Vista resultado ejemplo Conversor de Monedas](./img/captura01.png)
+
+#### Ejemplo de finalización:
+
+![Vista finalización ejemplo Conversor de Monedas](./img/captura02.png)
+
+#### Ejemplo de error en opción:
+
+![Vista Error en opción ejemplo Conversor de Monedas](./img/captura03.png)
+
+#### Ejemplo de error en cantidad:
+
+![Vista Error en cantidad ejemplo Conversor de Monedas](./img/captura04.png)
+
+#### Ejemplo de archivo registroConversiones.json:
+
+![Vista archivo registro en ejemplo Conversor de Monedas](./img/captura05.png)
+
+#### Ejemplo de archivo erroresConversion.json:
+
+![Vista archivo Error en ejemplo Conversor de Monedas](./img/captura06.png)
+
+
+***************
+
+
+
+
+\
+Este proyecto fue desarrollado para el  Challenges Alura "Challenge  Conversor de monedas" de la formación "Java Orientado a Objetos G7 - ONE" de ORACLE NEXT EDUCACTION -
+
+#### `GECR 2024`
+```
